@@ -1,0 +1,4 @@
+#Thu Oct 25 12:49:49 EDT 2018
+base.0=C\:\\Users\\Matt\\Documents\\GitHub\\mobile-project\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\10
+path.0=classes.dex
+renamed.0=classes.dex
