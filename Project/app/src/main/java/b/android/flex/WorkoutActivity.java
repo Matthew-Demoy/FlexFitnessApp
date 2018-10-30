@@ -33,6 +33,13 @@ public class WorkoutActivity extends AppCompatActivity {
 
         go_button = (Button)findViewById(R.id.go_button);
         pauseButton = (Button)findViewById(R.id.pauseButton);
+
+        weightView = (TextView) findViewById(R.id.WeightTextview);
+        setView = (TextView) findViewById(R.id.setTextview);
+        exerciseView = (TextView) findViewById(R.id.ExcersiseTextview) ;
+        repView = (TextView) findViewById(R.id.repsTextview);
+
+
         handler = new Handler();
         createTimer(go_button, currentWorkout);
         go_button.setOnClickListener(new View.OnClickListener() {
@@ -55,12 +62,19 @@ public class WorkoutActivity extends AppCompatActivity {
 
     void createTimer(final Button button, workoutSchedule workout)
     {
-        for(int x = 0 ; x < workout.getSize(); x++)
+        workout.makeSchedule();
+        workout.makeScheduleVerbose();
+        for(int x = 0 ; x < workout.mTimes.size()- 1; x++)
         {
-            tempTimer = new CountDownTimer(scheduleTimes[x]*1000, 1000) {
+            tempTimer = new CountDownTimer(workout.mTimes.get(x)*1000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     button.setText("seconds remaining: " + millisUntilFinished / 1000 + " at spot " + currentSpot);
+                    weightView.setText(Integer.toString(currentWorkout.mExercisesVerbose.get(currentSpot).mWeightNumber));
+                    setView.setText(Integer.toString(currentWorkout.mExercisesVerbose.get(currentSpot).mSetNumber));
+                    exerciseView.setText(currentWorkout.mExercisesVerbose.get(currentSpot).mExcersiseName);
+                    repView.setText(Integer.toString(currentWorkout.mExercisesVerbose.get(currentSpot).mRepNumber));
+
                 }
 
                 @Override

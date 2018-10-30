@@ -1,25 +1,39 @@
 package b.android.flex;
 
 public class exercise {
-    String excersiseName;
-    int setNumber;
-    int repNumber;
-    int weightNumber;
-    int eccentric;
-    int concentric;
-    int restTime;
+    String mExcersiseName;
+    int mSetNumber;
+    int mRepNumber;
+    int mWeightNumber;
+    int mEccentric;
+    int mConcentric;
+    int mRestTime;
 
     exercise()
     {
-        excersiseName = "default exercise";
-        setNumber = 3;
-        repNumber = 10;
-        weightNumber = 135;
-        eccentric = 3;
-        concentric = 3;
-        restTime = 10;
+        mExcersiseName = "default exercise";
+        mSetNumber = 3;
+        mRepNumber = 10;
+        mWeightNumber = 135;
+        mEccentric = 3;
+        mConcentric = 3;
+        mRestTime = 10;
 
     }
+
+    exercise(String name, int sets, int reps, int weight, int eccentric, int concentric, int rest)
+    {
+        mExcersiseName = name;
+        mSetNumber = sets;
+        mRepNumber = reps;
+        mWeightNumber = weight;
+        mEccentric = eccentric;
+        mConcentric = concentric;
+        mRestTime = rest;
+    }
+
+
+
 
 
 
