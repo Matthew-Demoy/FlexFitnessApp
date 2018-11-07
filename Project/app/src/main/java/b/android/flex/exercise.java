@@ -32,11 +32,11 @@ public class exercise {
         mRestTime = rest;
     }
 
+    public int getmWeightNumber() {
+        return mWeightNumber;
+    }
 
-
-
-
-
-
-
+    public void setmWeightNumber(int mWeightNumber) {
+        this.mWeightNumber = mWeightNumber;
+    }
 }
