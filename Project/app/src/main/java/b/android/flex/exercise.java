@@ -30,6 +30,7 @@ public class exercise {
         mEccentric = eccentric;
         mConcentric = concentric;
         mRestTime = rest;
+
     }
 
 
@@ -37,6 +38,5 @@ public class exercise {
 
 
 
-
-
+    
 }
