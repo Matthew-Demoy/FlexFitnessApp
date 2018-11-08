@@ -18,12 +18,12 @@ public class WorkoutActivity extends AppCompatActivity {
     long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L ;
     Handler handler;
     int Seconds;
-    int scheduleTimes[]  = {10,3,3,10,3,3,10};
     Vector<CountDownTimer> times = new Vector<>();
     int currentSpot = 0;
     CountDownTimer tempTimer;
     TextView weightView, setView, exerciseView, repView;
     workoutSchedule currentWorkout = new workoutSchedule();
+    programManager currentProgram = new programManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,6 @@ public class WorkoutActivity extends AppCompatActivity {
 
         go_button = (Button)findViewById(R.id.go_button);
         pauseButton = (Button)findViewById(R.id.pauseButton);
-
         weightView = (TextView) findViewById(R.id.WeightTextview);
         setView = (TextView) findViewById(R.id.setTextview);
         exerciseView = (TextView) findViewById(R.id.ExcersiseTextview) ;
@@ -45,7 +44,7 @@ public class WorkoutActivity extends AppCompatActivity {
         go_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    times.get(currentSpot).start();
+                    times.get(currentProgram.getCurrentExcercise()).start();
 
             }
         });
