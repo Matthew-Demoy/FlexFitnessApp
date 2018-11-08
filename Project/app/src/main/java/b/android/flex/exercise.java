@@ -30,6 +30,7 @@ public class exercise {
         mEccentric = eccentric;
         mConcentric = concentric;
         mRestTime = rest;
+<<<<<<< HEAD
 
     }
 
@@ -39,4 +40,15 @@ public class exercise {
 
 
     
+=======
+    }
+
+    public int getmWeightNumber() {
+        return mWeightNumber;
+    }
+
+    public void setmWeightNumber(int mWeightNumber) {
+        this.mWeightNumber = mWeightNumber;
+    }
+>>>>>>> c4d7fd7be8f09f81da0dcdb38fdc31fef4e0d532
 }
