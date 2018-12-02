@@ -28,11 +28,10 @@ public class workoutSchedule {
 
     void makeSchedule()
     {
-        mTimes.add(5);
-
+        mTimes = new Vector<>();
         for(int i = 0; i < mExcersises.size(); i++)
         {
-            for(int j = 0; j < mExcersises.get(i).mSetNumber - 1; j++)
+            for(int j = 0; j < mExcersises.get(i).mSetNumber; j++)
             {
                 for(int k = 0; k < mExcersises.get(i).mRepNumber - 1; k++)
                 {
@@ -43,7 +42,7 @@ public class workoutSchedule {
                 mTimes.add(mExcersises.get(i).mRestTime);
             }
         }
-        mTimes.remove(mTimes.size() - 1);
+        //mTimes.remove(mTimes.size() - 1);
 
     }
 
@@ -54,11 +53,11 @@ public class workoutSchedule {
     {
         mExercisesVerbose = new Vector<>();
 
-        mExercisesVerbose.add(new exercise(mExcersises.get(0).mExcersiseName, 0, 0, mExcersises.get(0).mWeightNumber, mExcersises.get(0).mEccentric, mExcersises.get(0).mConcentric, mExcersises.get(0).mRestTime));
+        //mExercisesVerbose.add(new exercise(mExcersises.get(0).mExcersiseName, 0, 0, mExcersises.get(0).mWeightNumber, mExcersises.get(0).mEccentric, mExcersises.get(0).mConcentric, mExcersises.get(0).mRestTime));
 
         for(int i = 0; i < mExcersises.size(); i++)
         {
-            for(int j = 0; j < mExcersises.get(i).mSetNumber - 1; j++)
+            for(int j = 0; j < mExcersises.get(i).mSetNumber; j++)
             {
                 for(int k = 0; k < mExcersises.get(i).mRepNumber; k++)
                 {
@@ -67,11 +66,11 @@ public class workoutSchedule {
 
                 }
                 mExercisesVerbose.add(new exercise(mExcersises.get(i).mExcersiseName, j+1, mExcersises.get(i).mRepNumber, mExcersises.get(i).mWeightNumber, mExcersises.get(i).mEccentric, mExcersises.get(i).mConcentric, mExcersises.get(i).mRestTime));
-                mExercisesVerbose.add(new exercise(mExcersises.get(i).mExcersiseName, 0, 0, mExcersises.get(i).mWeightNumber, mExcersises.get(i).mEccentric, mExcersises.get(i).mConcentric, mExcersises.get(i).mRestTime));
+                mExercisesVerbose.add(new exercise(mExcersises.get(i).mExcersiseName, mExcersises.get(i).mSetNumber, 0, mExcersises.get(i).mWeightNumber, mExcersises.get(i).mEccentric, mExcersises.get(i).mConcentric, mExcersises.get(i).mRestTime));
 
             }
         }
-        mExercisesVerbose.remove(mExercisesVerbose.size() - 1);
+        //mExercisesVerbose.remove(mExercisesVerbose.size() - 1);
     }
 
     public void addExcersise(exercise Exercise)

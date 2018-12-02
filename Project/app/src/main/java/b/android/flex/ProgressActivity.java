@@ -370,24 +370,12 @@ public class ProgressActivity extends AppCompatActivity {
         //Tue Sep 13 19:50:58 EST 2018
         String date1Fix;
         String date2Fix;
-        if(Integer.parseInt(split1[2])>9)
-        {
-            date1Fix = split1[5] + '/' + monthToNumber(split1[1]) + '/' + split1[2];
-        }
-        else
-        {
-            date1Fix = split1[5] + '/' + monthToNumber(split1[1]) + "/0" + split1[2];
-        }
 
-        if(Integer.parseInt(split2[2])>9)
-        {
-            date2Fix = split2[5] + '/' + monthToNumber(split2[1]) + '/' + split2[2];
-        }
-        else
-        {
-            date2Fix = split2[5] + '/' + monthToNumber(split2[1]) + "/0" + split2[2];
-        }
+        date1Fix = split1[5] + '/' + monthToNumber(split1[1]) + '/' + split1[2];
 
+        //if(Integer.parseInt(split2[2])>9)
+        date2Fix = split2[5] + '/' + monthToNumber(split2[1]) + '/' + split2[2];
+        
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         LocalDate localDateNew = LocalDate.parse(date1Fix, format);
         LocalDate localDateOld = LocalDate.parse(date2Fix, format);

@@ -39,11 +39,11 @@ public class Program {
 
         workoutSchedule chestWorkout = new workoutSchedule();
 
-        chestWorkout.addExcersise(new exercise("Flat Bench", 3, 5, 1, 2, 2, 10));
+        chestWorkout.addExcersise(new exercise("Flat Bench", 1, 5, 1, 2, 2, 10));
         chestWorkout.addExcersise(new exercise("Shoulder Press", 3, 5, 80, 3, 3, 60));
         chestWorkout.addExcersise(new exercise("Lateral Raise", 3, 10, 45, 2, 2, 60));
         chestWorkout.addExcersise(new exercise("Tricep Pushdown", 3, 12, 50, 1, 1, 60));
-        chestWorkout.addExcersise(new exercise("Shrug", 4, 8, 160, 2, 3, 60));
+        chestWorkout.addExcersise(new exercise("Shrug", 4, 8, 160, 2, 3, 10));
 
         workoutSchedule backWorkout = new workoutSchedule();
 

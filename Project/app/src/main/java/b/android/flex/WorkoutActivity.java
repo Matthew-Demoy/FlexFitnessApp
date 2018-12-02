@@ -150,7 +150,7 @@ public class WorkoutActivity extends AppCompatActivity {
         weightView = (TextView) findViewById(R.id.WeightTextview);
         setView = (TextView) findViewById(R.id.setTextview);
         exerciseView = (TextView) findViewById(R.id.ExcersiseTextview) ;
-        //repView = (TextView) findViewById(R.id.repsTextview);
+        repView = (TextView) findViewById(R.id.repsTextview);
         workoutView = findViewById(R.id.currentWorkoutView);
 
         handler = new Handler();
@@ -212,8 +212,12 @@ public class WorkoutActivity extends AppCompatActivity {
         increaseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                increaseWeight();
-                currentProgram.increaseWeight(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(currentProgram.getCurrentSpot()).mExcersiseName);
+                if(currentProgram.isTimerRunning == true && currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mCountDownTimers.size() >= currentProgram.getCurrentSpot())
+                {
+                    increaseWeight();
+                    currentProgram.increaseWeight(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(currentProgram.getCurrentSpot()).mExcersiseName);
+                }
+
 
             }
         });
@@ -350,16 +354,20 @@ public class WorkoutActivity extends AppCompatActivity {
                     }
                     else
                     {
-                        button.setText("Set" + Integer.toString(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(currentProgram.getCurrentSpot()).mSetNumber) + " of " + Integer.toString(temp));
+                        button.setText("Set " + Integer.toString(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(currentProgram.getCurrentSpot()).mSetNumber) + " of " + Integer.toString(temp));
                     }
 
                     workoutView.setText(currentProgram.program.get(currentProgram.getCurrentWorkout()).first + "day");
-                    weightView.setText(" at " + Integer.toString(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(currentProgram.getCurrentSpot()).mWeightNumber) + " lbs");
+                    weightView.setText("at " + Integer.toString(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(currentProgram.getCurrentSpot()).mWeightNumber) + " lbs");
 
 
                     setView.setText(Integer.toString(temp) + " sets of ");
                     exerciseView.setText(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(currentProgram.getCurrentSpot()).mExcersiseName);
-                    //repView.setText(Integer.toString(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(currentProgram.getCurrentSpot()).mRepNumber) + " reps");
+                    if(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(currentProgram.getCurrentSpot()).mRepNumber != 0)
+                    {
+                        repView.setText( "for " + Integer.toString(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(currentProgram.getCurrentSpot()).mRepNumber) + " reps");
+
+                    }
 
 
                 }
@@ -385,6 +393,8 @@ public class WorkoutActivity extends AppCompatActivity {
                         currentProgram.increaseCurrentSpot();
                         currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mCountDownTimers.get(currentProgram.getCurrentSpot()).start();
                         currentSet = currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(currentProgram.getCurrentSpot()).mSetNumber;
+
+
                     }
                     else
                     {
@@ -473,5 +483,6 @@ public class WorkoutActivity extends AppCompatActivity {
         */
         databaseList.updateChildren(obj);
     }
+
 
 }
