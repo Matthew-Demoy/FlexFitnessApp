@@ -2,6 +2,8 @@ package b.android.flex;
 
 import java.util.Vector;
 
+//There was a plan to have multiple programs in the app but since there is one this program is no long a unique obj
+//just saving this if I want to build this feature in the future
 public class fiveByFiveProgram extends Program {
     public fiveByFiveProgram()
     {

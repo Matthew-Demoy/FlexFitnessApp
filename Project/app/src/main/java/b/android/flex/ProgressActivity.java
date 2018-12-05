@@ -80,6 +80,7 @@ public class ProgressActivity extends AppCompatActivity {
 
     private TextView tvX, tvY;
 
+    //Keeps track of the current timespand and exercise displayed so whenever the activity is reopend it maintains state!
     @Override
     public void onPause() {
         super.onPause();  // Always call the superclass method first
@@ -168,20 +169,23 @@ public class ProgressActivity extends AppCompatActivity {
 
         });
 
-
+        //each on click listener is really similar in this activity
         oneMonthDisplay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                //organize lift data retrieved from the db
                 retrieveLiftData();
+                //plot points using generate data, pass it in the current timespan and exercise
                 LineGraphSeries<DataPoint> series = new LineGraphSeries<>(generateData(30, currentExerciseDisplayed));
-
+                //set some graph params to look nice
                 graph.getViewport().setXAxisBoundsManual(true);
                 graph.getViewport().setMinX(0);
                 graph.getViewport().setMaxX(30);
-
+                //clear current info displayed
                 graph.removeAllSeries();
+                //update the state of the activity
                 currentTimespanDisplayed = 30;
+                //plot the new line!
                 graph.addSeries(series);
             }
         });
@@ -212,17 +216,34 @@ public class ProgressActivity extends AppCompatActivity {
                 Date currentDate = new Date();
                 String helpDate = currentDate.toString();
 
-                int xRange = calculateDaysBetween(helpDate, userDateWeight.get(currentExerciseDisplayed).get(0).mDate);
 
-                LineGraphSeries<DataPoint> series = new LineGraphSeries<>(generateData(xRange, currentExerciseDisplayed));
+                int xRange1 = calculateDaysBetween(helpDate, userDateWeight.get(currentExerciseDisplayed).get(0).mDate);
+                int xRange2 = calculateDaysBetween(helpDate, userDateWeight.get(currentExerciseDisplayed).get(userDateWeight.get(currentExerciseDisplayed).size() - 1).mDate);
 
-                graph.getViewport().setXAxisBoundsManual(true);
-                graph.getViewport().setMinX(0);
-                graph.getViewport().setMaxX(xRange);
+                if(xRange1 > xRange2)
+                {
+                    LineGraphSeries<DataPoint> series = new LineGraphSeries<>(generateData(xRange1, currentExerciseDisplayed));
 
-                currentTimespanDisplayed = xRange;
-                graph.removeAllSeries();
-                graph.addSeries(series);
+                    graph.getViewport().setXAxisBoundsManual(true);
+                    graph.getViewport().setMinX(0);
+                    graph.getViewport().setMaxX(xRange1);
+
+                    currentTimespanDisplayed = xRange1;
+                    graph.removeAllSeries();
+                    graph.addSeries(series);
+                }
+                else{
+                    LineGraphSeries<DataPoint> series = new LineGraphSeries<>(generateData(xRange2, currentExerciseDisplayed));
+
+                    graph.getViewport().setXAxisBoundsManual(true);
+                    graph.getViewport().setMinX(0);
+                    graph.getViewport().setMaxX(xRange2);
+
+                    currentTimespanDisplayed = xRange2;
+                    graph.removeAllSeries();
+                    graph.addSeries(series);
+                }
+
             }
         });
 
@@ -284,6 +305,7 @@ public class ProgressActivity extends AppCompatActivity {
                 for (DataSnapshot messageSnapshot : dataSnapshot.child("Exercises").getChildren()) {
                     if(messageSnapshot.child("RepsCompleted").getValue() != null)
                     {
+                        //pulls children from the database and puts them in a completed exercises obj
                         String name = (String) messageSnapshot.child("ExcerciseName").getValue();
                         String date = (String) messageSnapshot.child("Date").getValue();
                         long reps = (long) messageSnapshot.child("RepsCompleted").getValue();
@@ -322,7 +344,7 @@ public class ProgressActivity extends AppCompatActivity {
 
             }
            */
-
+    //generate plot points using the completed exersices
     private DataPoint[] generateData(int days, int exercise) {
         DataPoint[] values = new DataPoint[days];
         long currentWeight = userDateWeight.get(exercise).get(0).mWeight;
@@ -332,9 +354,10 @@ public class ProgressActivity extends AppCompatActivity {
 
         int j;
         int temp = 0;
-
         for (int i=0; i < days; i++){
-
+                //for each day we need to add a weight
+                //if an exercise is logged for that day use the weight from that exercise
+                //ohterwise use the weight from the previous day
                 weightAdded = false;
                  for(j = 0; j < userDateWeight.get(exercise).size() && calculateDaysBetween(helpDate, userDateWeight.get(exercise).get(j).mDate) > days - i; j++)
                  {
@@ -363,6 +386,7 @@ public class ProgressActivity extends AppCompatActivity {
         return values;
     }
 
+    //get the days between by doing allot of string formatting
     private int calculateDaysBetween(String date1, String date2)
     {
         String[] split1 = date1.split(" ");
@@ -375,7 +399,7 @@ public class ProgressActivity extends AppCompatActivity {
 
         //if(Integer.parseInt(split2[2])>9)
         date2Fix = split2[5] + '/' + monthToNumber(split2[1]) + '/' + split2[2];
-        
+
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         LocalDate localDateNew = LocalDate.parse(date1Fix, format);
         LocalDate localDateOld = LocalDate.parse(date2Fix, format);
@@ -385,6 +409,7 @@ public class ProgressActivity extends AppCompatActivity {
         return differenceInDays;
     }
 
+    //I cant believe I had to make this manually
     private String monthToNumber(String month)
     {
         String newMonth;

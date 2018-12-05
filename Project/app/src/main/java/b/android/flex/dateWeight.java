@@ -1,5 +1,5 @@
 package b.android.flex;
-
+//Date and weight! probably coulve just used a pair but hey WHATEVA!
 public class dateWeight {
     String mDate;
     long mWeight;

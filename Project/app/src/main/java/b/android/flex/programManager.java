@@ -12,11 +12,14 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Vector;
 
 public class programManager extends Program {
+
+    //keep the state of the program with these three integers
     private int currentWorkout;
     private int currentExcercise;
     private int currentSpot;
+    //the program manager has a program that holds workout schedules which hold exercises
     public Vector<Pair<String , workoutSchedule>> program;
-    public Vector<CountDownTimer> workoutTimes;
+    //buttons do different things when if the timer is running so we always should know!
     public Boolean isTimerRunning;
 
     protected Vector<Pair<String, Integer>> weights = new Vector<Pair<String, Integer>>();
@@ -29,6 +32,7 @@ public class programManager extends Program {
         return currentExcercise;
     }
 
+    //initialize the program with default values which starts the program from the begining
     public programManager(){
         currentWorkout = 0;
         currentExcercise = 0;
@@ -38,6 +42,7 @@ public class programManager extends Program {
         program = super.makeFiveByFive(this.weights);
     }
 
+    //used to restore the state of the program
     public programManager(int workout, int ex, int spot){
         currentWorkout = workout;
         currentExcercise = ex;
@@ -53,11 +58,23 @@ public class programManager extends Program {
     }
 
     public void nextWorkout(){
-        currentWorkout = (currentWorkout + 1) % (program.size() - 1);
+        switch(currentWorkout){
+            case 0: currentWorkout = 1;
+                    break;
+            case 1: currentWorkout = 2;
+                    break;
+            case 2: currentWorkout = 0;
+                    break;
+        }
+        //currentWorkout = (currentWorkout + 1) % (program.size() - 1);
     }
 
     public workoutSchedule firstWorkout(){
         return super.program.get(0).second;
+    }
+
+    public int returnCurrentWorkout(){
+        return currentWorkout;
     }
 
 
@@ -66,6 +83,7 @@ public class programManager extends Program {
         return super.program.get(currentWorkout).second.mExcersises.get(currentExcercise);
     }
 
+    //updates the weights object which is use to save the users weights in the database onPause and onDestroy
     public void increaseWeight(String exerciseName){
         for(int i = 0; i < this.weights.size(); i++){
             if(weights.get(i).first.equals(exerciseName)){

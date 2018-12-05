@@ -24,12 +24,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,10 +35,7 @@ public class WorkoutActivity extends AppCompatActivity {
     Button pauseButton;
     Button increaseButton;
     Button decreaseButton;
-    Button progressButton;
-    long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L ;
     Handler handler;
-    int Seconds;
     Vector<CountDownTimer> times = new Vector<>();
     DatabaseReference databaseExercises;
     Date currentDate;
@@ -59,6 +50,8 @@ public class WorkoutActivity extends AppCompatActivity {
     workoutSchedule currentWorkout = new workoutSchedule();
     programManager currentProgram;
 
+
+    //When the activity is destroyed the current workout,exercise, and "Spot is saved
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         updateWeightsDB();
@@ -67,6 +60,7 @@ public class WorkoutActivity extends AppCompatActivity {
         outState.putInt("SPOT", currentProgram.getCurrentSpot());
     }
 
+    //When the activity is paused the current workout,exercise, and "Spot is saved
     @Override
     public void onPause() {
         super.onPause();  // Always call the superclass method first
@@ -84,13 +78,13 @@ public class WorkoutActivity extends AppCompatActivity {
             editor.putInt("SPOT", currentProgram.getCurrentSpot());
         }
 
-        // Commit the edits!
         editor.commit();
         currentProgram.isTimerRunning = false;
         updateWeightsDB();
 
     }
 
+    //when the activity is restored the program manager is given the correct spot
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         currentProgram = new programManager(savedInstanceState.getInt("WORKOUT"), savedInstanceState.getInt("EXERCISE"), savedInstanceState.getInt("SPOT"));
@@ -102,11 +96,13 @@ public class WorkoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
 
+        //Two databases one for logging completed exercises and the other for getting the users current weights
         databaseExercises = FirebaseDatabase.getInstance().getReference();
         databaseProgress = FirebaseDatabase.getInstance().getReference();
 
         SharedPreferences settings = getSharedPreferences("my_pref", 0);
 
+        //Value listener looks for new weights from the db
         ValueEventListener valueEventListener = new ValueEventListener() {
 
             @Override
@@ -161,7 +157,7 @@ public class WorkoutActivity extends AppCompatActivity {
         go_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                //If database has weights initialize those weights
                 if(currentProgram.weights.size() == 15)
                 {
                     currentProgram.getWeight();
@@ -169,6 +165,7 @@ public class WorkoutActivity extends AppCompatActivity {
                     currentProgram.program.get(currentProgram.getCurrentWorkout()).second.makeSchedule();
                     currentProgram.program.get(currentProgram.getCurrentWorkout()).second.makeScheduleVerbose();
                 }
+                //Since the go button can either start a timer or skip a timer it needs to know if a current timer is running or not
                 if(currentProgram.isTimerRunning == false){
 
                     if(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mCountDownTimers.size() < currentProgram.getCurrentSpot())
@@ -199,6 +196,7 @@ public class WorkoutActivity extends AppCompatActivity {
             }
         });
 
+        //lets pause the current timer and let the program manager know!
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -209,32 +207,38 @@ public class WorkoutActivity extends AppCompatActivity {
 
             }
         });
+
+        //increment the current exercises weight by 5 pounds and call a function that skips the current timer.
         increaseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(currentProgram.isTimerRunning == true && currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mCountDownTimers.size() >= currentProgram.getCurrentSpot())
+                //This if statement makes sure the program doesnt increment and then try to increase the value to an exercise that doesnt exist at the end of a workout
+                if(currentProgram.isTimerRunning == true && currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mCountDownTimers.size() - 1 > currentProgram.getCurrentSpot())
                 {
-                    increaseWeight();
                     currentProgram.increaseWeight(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(currentProgram.getCurrentSpot()).mExcersiseName);
+                    increaseWeight();
                 }
 
 
             }
         });
+
+        //same here but decrease by 5
         decreaseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(currentProgram.isTimerRunning == true && currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mCountDownTimers.size() >= currentProgram.getCurrentSpot())
+                if(currentProgram.isTimerRunning == true && currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mCountDownTimers.size() - 1 > currentProgram.getCurrentSpot())
                     {
-                        decreaseWeight();
                         currentProgram.decreaseWeight(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(currentProgram.getCurrentSpot()).mExcersiseName);
-
+                        decreaseWeight();
                     }
 
             }
         });
 
         /*
+
+
         progressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -243,6 +247,8 @@ public class WorkoutActivity extends AppCompatActivity {
             }
         });
            */
+
+        //This sets up the navigation view and tells which activity to go to based on which section of the nav bar is touched
         BottomNavigationView bottomNav= findViewById(R.id.bottom_navigation);
 
         Menu menu = bottomNav.getMenu();
@@ -261,6 +267,8 @@ public class WorkoutActivity extends AppCompatActivity {
 
                     case R.id.nav_schedule:
                         Intent intent1 = new Intent(WorkoutActivity.this, ScheduleActivity.class);
+                        int current = currentProgram.returnCurrentWorkout();
+                        intent1.putExtra("workoutnumber",current);
                         startActivity(intent1);
                         break;
 
@@ -280,10 +288,11 @@ public class WorkoutActivity extends AppCompatActivity {
 
     }
 
-
+    //if a timer is running get the next part of the program and update the database that its to easy!
+    //most of the for loops were because the program manager use to incmrement on a per rep basis rather than set
     void increaseWeight()
     {
-        if(currentProgram.isTimerRunning == true && currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mCountDownTimers.size() >= currentProgram.getCurrentSpot()) {
+        if(currentProgram.isTimerRunning == true && currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mCountDownTimers.size() > currentProgram.getCurrentSpot()) {
             updateDatabase(false, true);
             for (int exercise = currentProgram.getCurrentExcercise(); exercise < currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.size(); exercise++) {
                 if (currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(exercise).mExcersiseName.equals(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(currentProgram.getCurrentSpot()).mExcersiseName))
@@ -294,38 +303,38 @@ public class WorkoutActivity extends AppCompatActivity {
             }
 
             currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mCountDownTimers.get(currentProgram.getCurrentSpot()).cancel();
-            while (currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(currentProgram.getCurrentSpot()).mSetNumber != 0) {
-                //this might array out of bounds
-                currentProgram.increaseCurrentSpot();
-            }
-            if (currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mCountDownTimers.size() >= currentProgram.getCurrentSpot()) {
+               //this might array out of bounds
+            currentProgram.increaseCurrentSpot();
+
+            if (currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mCountDownTimers.size() > currentProgram.getCurrentSpot()) {
                 currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mCountDownTimers.get(currentProgram.getCurrentSpot()).start();
             }
         }
     }
+
     void decreaseWeight()
     {
-        updateDatabase(true,false);
-        for(int exercise = currentProgram.getCurrentExcercise(); exercise < currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.size(); exercise++)
-        {
-            if(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(exercise).mExcersiseName.equals(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(currentProgram.getCurrentSpot()).mExcersiseName));
-            {
-                currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(exercise).setmWeightNumber(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.elementAt(exercise).getmWeightNumber() - 5);
+        if(currentProgram.isTimerRunning == true && currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mCountDownTimers.size() > currentProgram.getCurrentSpot()) {
+            updateDatabase(true, false);
+            for (int exercise = currentProgram.getCurrentExcercise(); exercise < currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.size(); exercise++) {
+                if (currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(exercise).mExcersiseName.equals(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(currentProgram.getCurrentSpot()).mExcersiseName))
+                    ;
+                {
+                    currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(exercise).setmWeightNumber(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.elementAt(exercise).getmWeightNumber() - 5);
+                }
+            }
+
+            currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mCountDownTimers.get(currentProgram.getCurrentSpot()).cancel();
+
+            currentProgram.increaseCurrentSpot();
+            if (currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mCountDownTimers.size() >= currentProgram.getCurrentSpot()) {
+                currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mCountDownTimers.get(currentProgram.getCurrentSpot()).start();
+
             }
         }
-
-        currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mCountDownTimers.get(currentProgram.getCurrentSpot()).cancel();
-        while(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(currentProgram.getCurrentSpot()).mSetNumber != 0)
-        {
-            //this might array out of bounds
-            currentProgram.increaseCurrentSpot();
-        }
-        if(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mCountDownTimers.size() >= currentProgram.getCurrentSpot())
-        {
-            currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mCountDownTimers.get(currentProgram.getCurrentSpot()).start();
-
-        }
     }
+
+    //Create a timer object and based on the timers state set the text of all the view, Chains the timers together in onFinish to have the timers transition smoothly
     void createTimer(final Button button, workoutSchedule workout)
     {
         currentProgram.program.get(currentProgram.getCurrentWorkout()).second.makeSchedule();
@@ -343,7 +352,7 @@ public class WorkoutActivity extends AppCompatActivity {
                         {
                             if(currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(currentProgram.getCurrentSpot()).mSetNumber <= currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(i).mSetNumber)
                             {
-                                temp = currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(i).mSetNumber + 1;
+                                temp = currentProgram.program.get(currentProgram.getCurrentWorkout()).second.mExercisesVerbose.get(i).mSetNumber;
                             }
                         }
                     }
@@ -412,7 +421,7 @@ public class WorkoutActivity extends AppCompatActivity {
 
     }
 
-
+    //Gets a finished exercise and add that exercises info to the database
     void updateDatabase(boolean tooHard, boolean tooEasy)
     {
         JSONArray jsonArray;
@@ -455,6 +464,7 @@ public class WorkoutActivity extends AppCompatActivity {
         databaseList.updateChildren(obj);
     }
 
+    //for updating a weight all we need is the weight and exercise name
     void updateWeightsDB()
     {
         JSONArray jsonArray;

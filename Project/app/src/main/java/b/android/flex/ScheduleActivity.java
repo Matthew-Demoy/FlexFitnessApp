@@ -37,6 +37,7 @@ public class ScheduleActivity  extends AppCompatActivity {
         Intent mIntent = getIntent();
         i = mIntent.getIntExtra("workoutnumber",0);
 
+        //iterates through the current workout and gets the exercise names
         if(currentProgram.program.get(i).second.mExcersises.size() == 5)
         {
             Workout1View.setText(currentProgram.program.get(i).second.mExcersises.get(0).mExcersiseName);
@@ -45,10 +46,11 @@ public class ScheduleActivity  extends AppCompatActivity {
             Workout4View.setText(currentProgram.program.get(i).second.mExcersises.get(3).mExcersiseName);
             Workout5View.setText(currentProgram.program.get(i).second.mExcersises.get(4).mExcersiseName);
             WorkoutNameView.setText(currentProgram.program.get(i).first);
-            dayWorkout.setText("Current Workout");
+            dayWorkout.setText("Today's Workout");
         }
 
 
+        //gets previouse workouts and keeps track of wether it was in the future or past
         lastWorkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,6 +127,7 @@ public class ScheduleActivity  extends AppCompatActivity {
         MenuItem menuItem = menu.getItem(2);
         menuItem.setChecked(true);
 
+        //This sets up the navigation view and tells which activity to go to based on which section of the nav bar is touched
         bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener(){
 
             @Override

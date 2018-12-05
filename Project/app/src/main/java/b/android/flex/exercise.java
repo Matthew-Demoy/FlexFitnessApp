@@ -1,5 +1,6 @@
 package b.android.flex;
 
+//Exercise object just holds the relevent info of one exercise
 public class exercise {
     String mExcersiseName;
     int mSetNumber;
@@ -9,6 +10,8 @@ public class exercise {
     int mConcentric;
     int mRestTime;
 
+    //was used as a placeholder when creating other features
+    //so I might use this default constructer in the future
     exercise()
     {
         mExcersiseName = "default exercise";
@@ -33,7 +36,7 @@ public class exercise {
 
     }
 
-
+    //get and set for weight which is pretty common in the app
     public int getmWeightNumber() {
         return mWeightNumber;
     }

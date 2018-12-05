@@ -1,15 +1,20 @@
 package b.android.flex;
 
-
+//The workhorse when it comes to making the lists of exercises
+//allot of code commented out because workouts are no longer incremented by reps however future versions will bee
 import android.os.CountDownTimer;
 
 import java.util.Vector;
 
 public class workoutSchedule {
 
+    //mExercises is literally a list of exercises
     public Vector<exercise> mExcersises;
+    //exercises are listed in multiples of its set # with rests after each listing
     public Vector<exercise> mExercisesVerbose;
+    //holds the amount of seconds each exercise requires
     public Vector<Integer> mTimes;
+    //holds the countdowntimer objects in order so they can be easily stopped and restarted
     public Vector<CountDownTimer> mCountDownTimers;
 
 

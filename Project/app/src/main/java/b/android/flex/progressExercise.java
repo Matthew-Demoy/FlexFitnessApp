@@ -2,6 +2,7 @@ package b.android.flex;
 
 import java.util.Map;
 
+//copy of exercise object but uses longs instead of ints because thats how firebase stores numeric values
 public class progressExercise {
 
     String mDate;
