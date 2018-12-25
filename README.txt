@@ -23,17 +23,9 @@ features helped with these goals immensley. Lastly we chose to implement one
 fitness program rather than multiple so we could focus on having the features
 of the app work really well for that one program.
 
-
-Over the course of this project we learned not only allot about android
-studio but also allot about other aspects of app devlopment. First of all
-github is hard and something we both agree on spending more time to master. 
-Also We learned about firebase and how to connect it to an app. Lastly towards
-the end of the app cycle we encountered some bugs when refactoring code so we
-wish we had a testing framework to catch these bugs sooner. 
-
 This app uses a firebase db and graph view
 If you are getting build errors check the gradle build for the app and see 
-if its trying to implement a directory local to me or joes machine. 
+if its trying to implement a directory local to me or joe's machine. 
 If you disconnect from the database their should be default values so the 
 app fully functions without the db but will just lack the feature of saving 
 weights.
