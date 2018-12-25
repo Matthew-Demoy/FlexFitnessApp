@@ -1,7 +1,9 @@
 Flex App Readme
 
-Matthew Demoy
-Joe Murphy
+Matthew Demoy - Database setup, Progress Activity, internal timers and program object and child objects, 
+Joe Murphy - Schedule Activity, Created increase and decrease features, xml setup for workout view, made sure each screen functions when rotated,
+We both worked on the powerpoint and matt recorded that walkthrough
+Overall Matt did a little more back end and Joe did a little more front end. 50/50 split.
 
 Howdy, this is Matt from the flex team and this is the final update on the Flex app.
 Allot has changed since the proposal mostly due to time constraints but what
