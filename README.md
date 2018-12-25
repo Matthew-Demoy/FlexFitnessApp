@@ -11,6 +11,5 @@ A walkthrough of the app is here: (https://www.youtube.com/watch?v=qFuIixyxrlQ)
 
 ## Authors
 
-Matthew Demoy
-Joe Murphy
+Matthew Demoy and Joe Murphy
 
